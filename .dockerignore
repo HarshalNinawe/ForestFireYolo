@@ -1,0 +1,17 @@
+.git
+.venv
+__pycache__
+.ipynb_checkpoints
+runs/
+outputs/*
+!outputs/.gitkeep
+*.avi
+*.mp4
+*.jpg
+*.png
+*.log
+.gitignore
+.dockerignore
+README.md
+packages.txt
+runtime.txt

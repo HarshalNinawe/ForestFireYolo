@@ -23,12 +23,11 @@ This repository contains a complete, deployment-ready web application built usin
 - **Robust Video Detection**:
   - Support for `MP4`, `AVI`, and `MOV` video formats.
   - Frame-by-frame streaming predictions with real-time visual progress indicator (%).
-  - Codec auto-fallback (`avc1`/H.264 & `mp4v`) to maximize inline browser video playback compatibility.
   - High-performance, memory-optimized processing.
   - Full-duration metric aggregations and output video download options.
 - **Enterprise-Grade Stability**:
-  - Cleaned temporary files automatically on startup and periodically post-processing.
-  - Full check-and-catch blocks preventing app crashes on corrupt uploads or empty inputs.
+  - Temporary files automatically cleaned up after each prediction.
+  - Full exception handling preventing app crashes on corrupt uploads or empty inputs.
 
 ---
 
@@ -41,78 +40,113 @@ ForestFireDetection/
 ├── utils.py           # Core OpenCV video pipeline, image analysis, & caching
 ├── best.pt            # Pre-trained YOLOv11 model weights (must be present)
 ├── requirements.txt   # Pip package dependencies
-├── runtime.txt        # python-3.11 environment configuration
-├── packages.txt       # System-level dependencies for Streamlit Cloud (libgl1)
-├── .gitignore         # Config to ignore python artifacts & temporary outputs
-├── README.md          # Comprehensive project manual
-└── outputs/           # Destination directory for processed video clips
+├── Dockerfile         # Production Docker image configuration
+├── .dockerignore      # Docker build context exclusions
+├── .gitignore         # Git ignore rules
+├── README.md          # Project documentation
+└── outputs/           # Temporary directory for processed video clips
+    └── .gitkeep
 ```
 
 ---
 
 ## 🛠️ Installation & Setup
 
-Ensure you have Python 3.8+ installed (tested on Python 3.10.9).
+### Prerequisites
+- Python 3.11+
+- Docker (for deployment)
 
-1. **Clone or Download the Repository**
-   Make sure you are inside the `ForestFireDetection` project root directory.
+### Local Development
 
-2. **Add the Model Weights**
-   Place your trained YOLOv11 model file named `best.pt` into the root directory.
-
-3. **Create a Virtual Environment (Recommended)**
+1. **Clone the Repository**
    ```bash
-   # Windows PowerShell/Command Prompt
-   python -m venv .venv
-   .venv\Scripts\activate
-   
-   # Linux/macOS
-   python3 -m venv .venv
-   source .venv/bin/activate
+   git clone https://github.com/HarshalNinawe/ForestFireYolo.git
+   cd ForestFireYolo
    ```
 
-4. **Install Dependencies**
+2. **Create a Virtual Environment**
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate   # Linux/macOS
+   .venv\Scripts\activate      # Windows
+   ```
+
+3. **Install Dependencies**
    ```bash
    pip install -r requirements.txt
    ```
 
+4. **Run Locally**
+   ```bash
+   streamlit run app.py
+   ```
+   The app opens at `http://localhost:8501`.
+
 ---
 
-## 🖥️ Running Locally
+## 🐳 Docker Deployment
 
-Start the Streamlit development server:
+### Build and Run Locally with Docker
 
 ```bash
-streamlit run app.py
+docker build -t forest-fire-detection .
+docker run -p 8501:8501 forest-fire-detection
 ```
 
-Once running, the application will automatically open in a new tab in your default browser at `http://localhost:8501`.
+The app will be available at `http://localhost:8501`.
 
 ---
 
-## ☁️ Deployment on Streamlit Community Cloud
+## ☁️ Deploy on Render.com
 
-The application is completely configured for immediate deployment to **Streamlit Community Cloud** or **Hugging Face Spaces**.
+### Step-by-Step Instructions
 
-### Steps for Streamlit Community Cloud:
-1. Push this folder to a public GitHub repository. (Ensure `best.pt` is committed. If the model file is larger than 100MB, use Git LFS, although standard YOLOv11nano/small weights are ~5-20MB and can be pushed directly).
-2. Log in to [Streamlit Share](https://share.streamlit.io/).
-3. Click **New App**, then select your repository, branch, and set the Main file path to `app.py`.
-4. Click **Deploy**. Streamlit will automatically install dependencies from `requirements.txt` and launch the app.
+1. **Push to GitHub**
+   Ensure all files (including `best.pt` and `Dockerfile`) are committed and pushed to your GitHub repository.
+
+2. **Create a Render Account**
+   Sign up at [render.com](https://render.com/) and connect your GitHub account.
+
+3. **Create a New Web Service**
+   - Click **New** → **Web Service**.
+   - Select your `ForestFireYolo` repository.
+   - Render will auto-detect the `Dockerfile`.
+
+4. **Configure the Service**
+   | Setting | Value |
+   | :--- | :--- |
+   | **Name** | `forest-fire-detection` |
+   | **Region** | Choose nearest |
+   | **Instance Type** | Standard or higher (needs ~1GB RAM minimum) |
+   | **Docker Command** | *(leave default — uses Dockerfile CMD)* |
+
+5. **Deploy**
+   Click **Create Web Service**. Render will build the Docker image and deploy your app.
+
+6. **Access Your App**
+   Once deployed, Render provides a public URL like:
+   ```
+   https://forest-fire-detection.onrender.com
+   ```
+
+### Important Notes
+- **Model File Size**: `best.pt` (~5 MB) is within GitHub's file size limit and will be included in the Docker build.
+- **Free Tier**: Render's free tier may spin down after inactivity. The first request after idle may take 30-60 seconds.
+- **Memory**: For video processing, use a Standard instance ($7/month) or higher for reliable performance.
 
 ---
 
 ## 📦 Requirements
 
-The app relies on the following packages:
-- `streamlit`: Dashboard and UI framework.
-- `ultralytics`: YOLOv11 core prediction API.
-- `opencv-python-headless`: Fast frame loading and image transformations.
-- `numpy`: Multi-dimensional array operations.
-- `Pillow`: Image formatting and metadata loading.
-- `torch` & `torchvision`: Model execution engine.
-
-All specific versions are locked in the `requirements.txt` file.
+| Package | Purpose |
+| :--- | :--- |
+| `streamlit` | Web application framework |
+| `ultralytics` | YOLOv11 model inference |
+| `opencv-python-headless` | Image and video processing |
+| `numpy` | Array operations |
+| `Pillow` | Image format handling |
+| `torch` | PyTorch inference engine |
+| `torchvision` | Vision utilities |
 
 ---
 
