@@ -41,6 +41,8 @@ ForestFireDetection/
 ├── utils.py           # Core OpenCV video pipeline, image analysis, & caching
 ├── best.pt            # Pre-trained YOLOv11 model weights (must be present)
 ├── requirements.txt   # Pip package dependencies
+├── runtime.txt        # python-3.11 environment configuration
+├── packages.txt       # System-level dependencies for Streamlit Cloud (libgl1)
 ├── .gitignore         # Config to ignore python artifacts & temporary outputs
 ├── README.md          # Comprehensive project manual
 └── outputs/           # Destination directory for processed video clips
