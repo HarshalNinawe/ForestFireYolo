@@ -10,8 +10,3 @@ outputs/*
 *.jpg
 *.png
 *.log
-.gitignore
-.dockerignore
-README.md
-packages.txt
-runtime.txt
