@@ -129,6 +129,7 @@ def predict_video(model, input_path, output_path, conf_threshold=0.25, iou_thres
         out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
         
     if not out.isOpened():
+        out.release()
         cap.release()
         raise IOError(f"Could not open video writer with output path: {output_path}")
         
