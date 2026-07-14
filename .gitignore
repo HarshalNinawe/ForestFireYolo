@@ -1,0 +1,21 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# Streamlit config and cache
+.streamlit/
+
+# Temporary outputs
+outputs/*
+!outputs/.gitkeep
+
+# IDE configs
+.vscode/
+.idea/
